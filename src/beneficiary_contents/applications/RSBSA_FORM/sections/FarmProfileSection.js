@@ -359,7 +359,8 @@ const FarmProfileSection = ({ formData, errors, updateField }) => {
                   placeholder={item.specifyPlaceholder}
                   value={getActivityValue(section, item.specifyKey, '')}
                   onChange={(e) => handleFieldChange(section, item.specifyKey, e.target.value)}
-                  helperText={`Please specify ${item.label.toLowerCase()}`}
+                  error={!!errors[`${section}.${item.specifyKey}`]}
+                  helperText={errors[`${section}.${item.specifyKey}`] || `Please specify ${item.label.toLowerCase()}`}
                   size="small"
                 />
               </Box>
@@ -467,6 +468,15 @@ const FarmProfileSection = ({ formData, errors, updateField }) => {
         <Alert severity="success" sx={{ mb: 3, borderRadius: 2 }}>
           <Typography variant="body2">
             <strong>Selected:</strong> {enhancedCategories.find(cat => cat.id === formData.farmProfile.livelihood_category_id)?.category_name}
+          </Typography>
+        </Alert>
+      )}
+
+      {/* Error Display for Livelihood Category */}
+      {errors['farmProfile.livelihood_category_id'] && (
+        <Alert severity="error" sx={{ mb: 3, borderRadius: 2 }}>
+          <Typography variant="body2">
+            {errors['farmProfile.livelihood_category_id']}
           </Typography>
         </Alert>
       )}

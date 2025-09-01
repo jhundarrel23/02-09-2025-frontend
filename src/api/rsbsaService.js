@@ -161,8 +161,8 @@ export const rsbsaEnrollmentService = {
       
       // Validate enrollment data
       const validation = validateObject(enrollmentData, {
-        required: ['user_id', 'beneficiary_id', 'enrollment_year', 'enrollment_type'],
-        integer: ['user_id', 'beneficiary_id', 'enrollment_year']
+        required: ['user_id', 'beneficiary_details_id', 'enrollment_year', 'enrollment_type'],
+        integer: ['user_id', 'beneficiary_details_id', 'enrollment_year']
       });
       
       if (validation.hasErrors) {
@@ -571,15 +571,15 @@ export const beneficiaryLivelihoodsService = {
     }
   },
 
-  // Get beneficiary livelihoods by beneficiary ID
-  async getBeneficiaryLivelihoods(beneficiaryId) {
+  // Get beneficiary livelihoods by user ID
+  async getBeneficiaryLivelihoods(userId) {
     try {
-      console.log('🔍 Fetching beneficiary livelihoods for beneficiary:', beneficiaryId);
-      const response = await axiosInstance.get(`${RSBSA_ENDPOINTS.BENEFICIARY_LIVELIHOODS}/beneficiary/${beneficiaryId}`);
+      console.log('🔍 Fetching beneficiary livelihoods for user:', userId);
+      const response = await axiosInstance.get(`${RSBSA_ENDPOINTS.BENEFICIARY_LIVELIHOODS}/user/${userId}`);
       console.log('✅ Beneficiary livelihoods fetched successfully:', response.data);
       return { success: true, data: response.data };
     } catch (error) {
-      logError('Get Beneficiary Livelihoods', error, { beneficiaryId });
+      logError('Get Beneficiary Livelihoods', error, { userId });
       return { 
         success: false, 
         error: error.response?.data?.message || 'Failed to fetch beneficiary livelihoods',
@@ -1053,10 +1053,10 @@ export const rsbsaFormService = {
       // Step 2: Create farm profile
       console.log('🚀 Creating farm profile with data:', {
         ...formData.farmProfile,
-        beneficiary_id: userId
+        user_id: userId
       });
       console.log('📋 Original farmProfile data:', formData.farmProfile);
-      console.log('📋 Beneficiary (user) ID:', userId);
+      console.log('📋 User ID:', userId);
       
       // Validate that livelihood category is selected
       if (!formData.farmProfile.livelihood_category_id) {
@@ -1080,13 +1080,13 @@ export const rsbsaFormService = {
       
       const farmProfileData = {
         ...formData.farmProfile,
-        beneficiary_id: userId
+        user_id: userId
       };
       console.log('📋 Final farm profile data being sent:', farmProfileData);
       console.log('📋 Original farmProfile:', formData.farmProfile);
-      console.log('📋 Beneficiary (user) ID being added:', userId);
+      console.log('📋 User ID being added:', userId);
       console.log('📋 Spread result:', { ...formData.farmProfile });
-      console.log('📋 Final object:', { ...formData.farmProfile, beneficiary_id: userId });
+      console.log('📋 Final object:', { ...formData.farmProfile, user_id: userId });
       
       const farmProfileResult = await farmProfileService.createProfile(farmProfileData);
 
@@ -1126,7 +1126,7 @@ export const rsbsaFormService = {
         for (const livelihood of livelihoodsToProcess) {
           // Create beneficiary livelihood relationship
           const livelihoodResult = await beneficiaryLivelihoodsService.createBeneficiaryLivelihood({
-            beneficiary_id: userId,
+            user_id: userId
             livelihood_category_id: livelihood.livelihood_category_id
           });
 
@@ -1175,7 +1175,7 @@ export const rsbsaFormService = {
         const livelihoodCategoryId = formData.farmProfile.livelihood_category_id;
         if (livelihoodCategoryId) {
           const livelihoodResult = await beneficiaryLivelihoodsService.createBeneficiaryLivelihood({
-            beneficiary_id: userId,
+            user_id: userId
             livelihood_category_id: livelihoodCategoryId
           });
 
@@ -1222,7 +1222,7 @@ export const rsbsaFormService = {
       // Step 5: Create RSBSA enrollment
       const enrollmentResult = await rsbsaEnrollmentService.createEnrollment({
         user_id: userId,
-        beneficiary_id: beneficiaryDetailsId,
+        beneficiary_details_id: beneficiaryDetailsId,
         farm_profile_id: farmProfileId,
         application_reference_code: `RSBSA-${Date.now()}`,
         enrollment_year: new Date().getFullYear(),

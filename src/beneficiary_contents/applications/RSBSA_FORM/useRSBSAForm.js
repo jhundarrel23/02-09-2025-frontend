@@ -97,7 +97,7 @@ export const useRSBSAForm = () => {
     // Farm Profile (matches farmProfileService structure)
     farmProfile: {
       id: null,
-      beneficiary_id: null,
+      user_id: null,
       livelihood_category_id: null,
       created_at: null,
       updated_at: null
@@ -281,7 +281,7 @@ export const useRSBSAForm = () => {
           },
           farmProfile: {
             ...prevData.farmProfile,
-            beneficiary_id: beneficiaryId
+            user_id: beneficiaryId
           }
         }));
       } else if (userStr) {
@@ -297,7 +297,7 @@ export const useRSBSAForm = () => {
             },
             farmProfile: {
               ...prevData.farmProfile,
-              beneficiary_id: user.id
+              user_id: user.id
             }
           }));
         }
@@ -716,7 +716,7 @@ export const useRSBSAForm = () => {
       },
       farmProfile: {
         id: null,
-        beneficiary_id: null,
+        user_id: null,
         livelihood_category_id: null,
         created_at: null,
         updated_at: null
